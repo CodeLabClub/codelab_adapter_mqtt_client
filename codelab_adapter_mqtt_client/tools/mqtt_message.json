@@ -1,4 +1,4 @@
 {
     "zmq_topic": "core/extensions/operate",
-    "zmq_payload": { "content": "start", "extension_id": "extension_eim" }
+    "zmq_payload": { "content": "start", "extension_name": "extension_eim" }
 }

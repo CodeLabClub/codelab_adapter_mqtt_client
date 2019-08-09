@@ -26,6 +26,6 @@ codelab-mqtt-trigger # pub the message in json file(`/tmp/message.json`).
 ```json
 {
     "zmq_topic": "core/extensions/operate",
-    "zmq_payload": { "content": "start", "extension_id": "extension_eim" }
+    "zmq_payload": { "content": "start", "extension_name": "extension_eim" }
 }
 ```
