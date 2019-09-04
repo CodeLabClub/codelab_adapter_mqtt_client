@@ -21,8 +21,9 @@ class AdapterMQTTNode:
                  mqtt_port=1883,
                  username="guest",
                  password="test",
-                 mqtt_sub_topics=[FROM_MQTT_TOPIC, TO_MQTT_TOPIC],
-                 mqtt_pub_topic=TO_MQTT_TOPIC):
+                 mqtt_sub_topics=[TO_MQTT_TOPIC],
+                 mqtt_pub_topic=TO_MQTT_TOPIC,
+                 external_message_processor=None):
         # self.pub_topic = FROM_MQTT_TOPIC
         self._running = True
         self.name = name
@@ -34,6 +35,7 @@ class AdapterMQTTNode:
         self.mqtt_port = 1883
         self.username = username
         self.password = password
+        self.external_message_processor = external_message_processor
 
         # mqtt client
         self.client = mqtt.Client()
@@ -73,7 +75,9 @@ class AdapterMQTTNode:
         if topic in self.mqtt_sub_topics:
             m = msg.payload.decode()  # 在通道的两端做好decode和encode
             payload = json.loads(m)  # json
-            self.logger.info(f'topic:{msg.topic} , payload: {payload}')
+            self.logger.debug(f'topic:{msg.topic} , payload: {payload}')
+            if self.external_message_processor:
+                self.external_message_processor(topic, payload)
 
     def send_message(self, payload):
         payload = json.dumps(payload).encode()
@@ -103,3 +107,7 @@ class AdapterMQTTNode:
             }
         }
         return message_template
+
+    def publish(self, payload):
+        payload["zmq_topic"] = ADAPTER_TOPIC  # 否则会死循环
+        self.client.publish(FROM_MQTT_TOPIC, json.dumps(payload).encode())

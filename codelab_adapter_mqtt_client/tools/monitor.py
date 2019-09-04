@@ -13,6 +13,7 @@ class Monitor(AdapterMQTTNode):
     """
     def __init__(self, *args, **kwargs):
         kwargs["logger"] = logger
+        kwargs["mqtt_sub_topics"] = [FROM_MQTT_TOPIC, TO_MQTT_TOPIC]
         super().__init__(*args, **kwargs)
 
 def monitor():
