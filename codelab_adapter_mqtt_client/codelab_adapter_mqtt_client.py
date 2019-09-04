@@ -50,7 +50,7 @@ class AdapterMQTTNode:
         ''')
 
     def __str__(self):
-            return self.name
+        return self.name
 
     def mqtt_on_connect(self, client, userdata, flags, rc):
         self.logger.info(
@@ -65,6 +65,9 @@ class AdapterMQTTNode:
                     self.client.subscribe(sub)
 
     def mqtt_on_message(self, client, userdata, msg):
+        '''
+        use by monitor
+        '''
         topic = msg.topic
         # self.logger.debug(f"topic type: {type(topic)}") # str
         if topic in self.mqtt_sub_topics:
@@ -90,3 +93,13 @@ class AdapterMQTTNode:
     def clean_up(self):
         self._running = False
         self.client.loop_stop()
+
+    def message_template(self):
+        message_template = {
+            "zmq_topic": ADAPTER_TOPIC,
+            "zmq_payload": {
+                "content": "content",
+                "extension_id": self.EXTENSION_ID
+            }
+        }
+        return message_template
